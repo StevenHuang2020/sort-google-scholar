@@ -10,8 +10,7 @@ so that you can rank them by the number of citations
 As output this program will plot the number of citations in the Y axis and the 
 rank of the result in the X axis. It also, optionally, export the database to
 a .csv file.
-
-
+#steven 14/03/2020 add pdfUrl of source
 """
 
 import requests, os, datetime, argparse
@@ -170,6 +169,8 @@ def get_content_with_selenium(url):
 def main():
     # Get command line arguments
     keyword, number_of_results, save_database, path, sortby_column, plot_results, start_year, end_year = get_command_line_args()
+    print('keyword=',keyword, 'Number=',number_of_results, 'saveCsv=',save_database, 'path=', path, 'sortby_column=',sortby_column)
+    print('plot_results=',plot_results, 'start_year=',start_year, 'end_year=',end_year)
 
     # Create main URL based on command line arguments
     if start_year:
@@ -186,6 +187,7 @@ def main():
 
     # Variables
     links = []
+    pdfUrl = []
     title = []
     citations = []
     year = []
@@ -221,6 +223,11 @@ def main():
                 links.append(div.find('h3').find('a').get('href'))
             except: # catch *all* exceptions
                 links.append('Look manually at: '+url)
+                
+            try:
+                pdfUrl.append(div.find('div',{'class' : 'gs_or_ggsm'}).find('a').get('href'))
+            except: # catch *all* exceptions
+                pdfUrl.append('Look manually at: '+url)
 
             try:
                 title.append(div.find('h3').find('a').text)
@@ -250,8 +257,8 @@ def main():
         sleep(0.5)
 
     # Create a dataset and sort by the number of citations
-    data = pd.DataFrame(list(zip(author, title, citations, year, links)), index = rank[1:],
-                        columns=['Author', 'Title', 'Citations', 'Year', 'Source'])
+    data = pd.DataFrame(list(zip(author, title, citations, year, links, pdfUrl)), index = rank[1:],
+                        columns=['Author', 'Title', 'Citations', 'Year', 'Source', 'pdfUrl'])
     data.index.name = 'Rank'
 
     try:
