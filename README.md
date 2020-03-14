@@ -1,5 +1,6 @@
 ### STEVEN UPDATES
 - 14/03/2020 Add pdfUrl to save the source pdf url.
+- Add download files from txt file.
 
 
 
