@@ -37,7 +37,10 @@ def downloadFile(url,dstPath):
     if dstPath == DSTPATH:
         dst = fileName
     else:
-        dst = dstPath + "\\" + fileName
+        if dstPath[-1] == '/':
+            dst = dstPath + fileName
+        else:
+            dst = dstPath + "/" + fileName
 
     print('url=',url)
     print('filename=',filename)
@@ -46,7 +49,6 @@ def downloadFile(url,dstPath):
 
 def main():
     FILESTXT, DSTPATH = get_command_line_args()
-    print(FILESTXT, DSTPATH)
     if not os.path.exists(DSTPATH):
         os.mkdir(DSTPATH)
 
